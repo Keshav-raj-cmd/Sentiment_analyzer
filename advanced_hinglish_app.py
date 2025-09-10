@@ -7,6 +7,13 @@ from collections import Counter
 import warnings
 warnings.filterwarnings('ignore')
 
+st.set_page_config(page_title="My App")
+
+# Set server address and port
+import os
+os.environ['STREAMLIT_SERVER_ADDRESS'] = '0.0.0.0'
+os.environ['STREAMLIT_SERVER_PORT'] = '8501'
+
 # Try to import ML libraries - fallback to rule-based if not available
 try:
     from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
