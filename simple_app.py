@@ -233,14 +233,34 @@ def display_individual_results(results: List[Dict]):
     # Create DataFrame for display
     display_data = []
     for i, result in enumerate(results, 1):
+        # Handle both dict and DataFrame row formats
+        if isinstance(result, dict):
+            text = result.get('text', 'N/A')
+            sentiment = result.get('sentiment', 'N/A')
+            confidence = result.get('confidence', 0)
+            scores = result.get('scores', {})
+        else:
+            # Handle DataFrame row format
+            text = getattr(result, 'text', 'N/A')
+            sentiment = getattr(result, 'sentiment', 'N/A')
+            confidence = getattr(result, 'confidence', 0)
+            scores = {}
+            # Try to get individual score columns
+            if hasattr(result, 'Positive'):
+                scores['Positive'] = getattr(result, 'Positive', 0)
+            if hasattr(result, 'Neutral'):
+                scores['Neutral'] = getattr(result, 'Neutral', 0)
+            if hasattr(result, 'Negative'):
+                scores['Negative'] = getattr(result, 'Negative', 0)
+        
         display_data.append({
             '#': i,
-            'Feedback': result['text'][:100] + "..." if len(result['text']) > 100 else result['text'],
-            'Sentiment': result['sentiment'],
-            'Confidence': f"{result['confidence']:.3f}",
-            'Positive Score': f"{result['scores']['Positive']:.3f}",
-            'Neutral Score': f"{result['scores']['Neutral']:.3f}",
-            'Negative Score': f"{result['scores']['Negative']:.3f}"
+            'Feedback': text[:100] + "..." if len(str(text)) > 100 else str(text),
+            'Sentiment': sentiment,
+            'Confidence': f"{confidence:.3f}" if isinstance(confidence, (int, float)) else str(confidence),
+            'Positive Score': f"{scores.get('Positive', 0):.3f}",
+            'Neutral Score': f"{scores.get('Neutral', 0):.3f}",
+            'Negative Score': f"{scores.get('Negative', 0):.3f}"
         })
     
     df = pd.DataFrame(display_data)
