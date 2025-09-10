@@ -12,10 +12,8 @@ try:
     from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
     import torch
     ML_AVAILABLE = True
-    st.success("🚀 Advanced ML models are available! Using Hugging Face transformers for better accuracy.")
 except ImportError:
     ML_AVAILABLE = False
-    st.info("📌 Using enhanced rule-based analysis. Install transformers and torch for ML-powered accuracy.")
 
 # Page configuration
 st.set_page_config(
@@ -100,24 +98,19 @@ class AdvancedHinglishSentimentAnalyzer:
             
             for model_name in models_to_try:
                 try:
-                    st.info(f"Loading model: {model_name}")
                     self.ml_model = pipeline(
                         "sentiment-analysis", 
                         model=model_name,
                         return_all_scores=True
                     )
-                    st.success(f"✅ Successfully loaded: {model_name}")
                     break
                 except Exception as e:
-                    st.warning(f"Failed to load {model_name}: {str(e)}")
                     continue
             
             if self.ml_model is None:
-                st.error("Could not load any ML model. Falling back to rule-based analysis.")
                 self.use_ml = False
                 
         except Exception as e:
-            st.error(f"ML model loading failed: {str(e)}. Using rule-based analysis.")
             self.use_ml = False
     
     def preprocess_text(self, text: str) -> str:
@@ -202,7 +195,6 @@ class AdvancedHinglishSentimentAnalyzer:
             }
             
         except Exception as e:
-            st.warning(f"ML analysis failed: {str(e)}. Using rule-based fallback.")
             return self.analyze_single_feedback_rule_based(text)
     
     def analyze_single_feedback_rule_based(self, text: str) -> Dict:
