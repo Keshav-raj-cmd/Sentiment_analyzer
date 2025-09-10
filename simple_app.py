@@ -375,8 +375,40 @@ def main():
         
         if uploaded_file is not None:
             try:
-                # Read CSV
-                df = pd.read_csv(uploaded_file)
+                # Try multiple methods to read CSV
+                df = None
+                error_messages = []
+                
+                # Method 1: Standard with quotes
+                try:
+                    df = pd.read_csv(uploaded_file, quotechar='"', skipinitialspace=True)
+                except Exception as e:
+                    error_messages.append(f"Method 1 failed: {str(e)}")
+                
+                # Method 2: Skip bad lines
+                if df is None:
+                    try:
+                        uploaded_file.seek(0)  # Reset file pointer
+                        df = pd.read_csv(uploaded_file, quotechar='"', skipinitialspace=True, on_bad_lines='skip')
+                        if len(error_messages) > 0:
+                            st.warning("Some lines were skipped due to parsing issues, but the file was loaded successfully.")
+                    except Exception as e:
+                        error_messages.append(f"Method 2 failed: {str(e)}")
+                
+                # Method 3: Different separator handling
+                if df is None:
+                    try:
+                        uploaded_file.seek(0)  # Reset file pointer
+                        df = pd.read_csv(uploaded_file, sep=',', quotechar='"', escapechar='\\', on_bad_lines='skip')
+                    except Exception as e:
+                        error_messages.append(f"Method 3 failed: {str(e)}")
+                
+                if df is None:
+                    st.error("Could not parse CSV file. Please ensure it's properly formatted.")
+                    with st.expander("Error details"):
+                        for msg in error_messages:
+                            st.text(msg)
+                    return
                 
                 # Display preview
                 st.subheader("📋 Data Preview")
