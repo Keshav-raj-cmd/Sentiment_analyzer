@@ -8,12 +8,8 @@ from collections import Counter
 import warnings
 warnings.filterwarnings('ignore')
 
-port = int(os.environ.get("PORT", 8501))
-os.environ['STREAMLIT_SERVER_ADDRESS'] = '0.0.0.0'
-os.environ['STREAMLIT_SERVER_PORT'] = str(port)
-
-st.title("My App")
-st.write("Hello world!")
+st.title("My Streamlit App")
+st.write("Hello, world!")
 # Try to import ML libraries - fallback to rule-based if not available
 try:
     from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
