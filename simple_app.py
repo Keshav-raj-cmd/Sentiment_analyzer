@@ -17,26 +17,71 @@ class SimpleSentimentAnalyzer:
     """Simple rule-based sentiment analyzer"""
     
     def __init__(self):
-        # Simple word lists for sentiment analysis
+        # Enhanced word lists for sentiment analysis (English + Hinglish)
         self.positive_words = {
+            # English positive words
             'amazing', 'excellent', 'great', 'awesome', 'fantastic', 'wonderful', 
             'brilliant', 'outstanding', 'perfect', 'good', 'best', 'love', 
             'enjoy', 'helpful', 'organized', 'interactive', 'knowledgeable',
-            'memorable', 'fun', 'interesting'
+            'memorable', 'fun', 'interesting', 'superb', 'marvelous', 'fabulous',
+            
+            # Hindi/Hinglish positive words
+            'accha', 'achha', 'badhiya', 'bahut', 'zabardast', 'kamaal', 'mast',
+            'shandaar', 'shandar', 'ekdam', 'perfect', 'top', 'awesome', 'cool',
+            'maja', 'mazaa', 'maza', 'dhansu', 'dhaasu', 'jhakaas', 'jhakkas',
+            'superb', 'fantastic', 'lovely', 'beautiful', 'sundar', 'khubsurat',
+            'lajawab', 'umda', 'behtarin', 'shaandaar', 'gazab', 'kamaal',
+            'mind-blowing', 'outstanding', 'brilliant', 'wonderful', 'amazing'
         }
         
         self.negative_words = {
+            # English negative words
             'bad', 'terrible', 'awful', 'boring', 'poor', 'disappointed', 
             'waste', 'worst', 'hate', 'useless', 'delayed', 'disorganized',
-            'lacking', 'mediocre', 'average', 'could be better', 'improve'
+            'lacking', 'mediocre', 'average', 'could be better', 'improve',
+            
+            # Hindi/Hinglish negative words
+            'bekar', 'bekaar', 'ganda', 'bura', 'kharab', 'kharrab', 'faltu',
+            'bakwas', 'bewakoof', 'pagal', 'stupid', 'nonsense', 'timepass',
+            'boring', 'dull', 'sad', 'disappointed', 'upset', 'angry', 'gussa',
+            'pareshan', 'tension', 'problem', 'issue', 'dikkat', 'mushkil',
+            'galat', 'wrong', 'mistake', 'ghalti', 'waste', 'useless',
+            'nirasha', 'udaas', 'dukh', 'dard', 'pain', 'hurt', 'thak',
+            'thaka', 'tired', 'bore', 'boring'
         }
     
     def preprocess_text(self, text: str) -> str:
-        """Simple text preprocessing"""
+        """Enhanced text preprocessing for Hinglish"""
         if not isinstance(text, str):
             return ""
-        # Convert to lowercase and remove extra whitespace
-        return re.sub(r'\s+', ' ', text.lower().strip())
+        
+        # Convert to lowercase
+        text = text.lower()
+        
+        # Handle common Hinglish patterns and normalize spellings
+        replacements = {
+            'accha': 'achha',
+            'acha': 'achha', 
+            'badia': 'badhiya',
+            'badiya': 'badhiya',
+            'kharab': 'kharrab',
+            'jakas': 'jhakaas',
+            'jhakass': 'jhakaas',
+            'dhansu': 'dhaasu',
+            'shandar': 'shandaar',
+            'kammal': 'kamaal',
+            'gajab': 'gazab',
+            'bekaar': 'bekar',
+            'faltu': 'faltu',
+            'bura': 'bura',
+            'ganda': 'ganda'
+        }
+        
+        for old, new in replacements.items():
+            text = text.replace(old, new)
+        
+        # Remove extra whitespace
+        return re.sub(r'\s+', ' ', text.strip())
     
     def analyze_single_feedback(self, text: str) -> Dict:
         """Analyze sentiment of a single feedback text"""
@@ -96,9 +141,27 @@ class SimpleSentimentAnalyzer:
         return results_df
     
     def get_most_common_words(self, texts: List[str], num_words: int = 10) -> List[tuple]:
-        """Get most common words from texts"""
+        """Get most common words from texts (English + Hinglish)"""
         all_words = []
-        stopwords = {'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'it', 'he', 'she', 'they', 'we', 'you', 'i', 'me', 'my', 'your', 'his', 'her', 'their', 'our', 'this', 'that', 'these', 'those'}
+        # Enhanced stopwords for English + Hindi/Hinglish
+        stopwords = {
+            # English stopwords
+            'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 
+            'a', 'an', 'is', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 
+            'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 
+            'can', 'it', 'he', 'she', 'they', 'we', 'you', 'i', 'me', 'my', 'your', 
+            'his', 'her', 'their', 'our', 'this', 'that', 'these', 'those', 'are',
+            
+            # Hindi/Hinglish stopwords  
+            'hai', 'tha', 'thi', 'the', 'aur', 'ya', 'ki', 'ka', 'ke', 'ko', 'se', 
+            'mein', 'me', 'par', 'pe', 'main', 'yeh', 'ye', 'woh', 'wo', 'kya', 
+            'kyun', 'kaise', 'kab', 'kahan', 'kitna', 'kaun', 'jo', 'jab', 'agar', 
+            'lekin', 'par', 'bas', 'sirf', 'bhi', 'tak', 'liye', 'lie', 'gaya', 
+            'gaye', 'gayi', 'kar', 'kiya', 'kiye', 'karna', 'hona', 'hone', 'hua', 
+            'hui', 'hue', 'rahega', 'rahenge', 'rahe', 'raha', 'rahi', 'rhe', 'rha', 
+            'rhi', 'aise', 'jaise', 'waise', 'kaise', 'very', 'much', 'more', 'most',
+            'some', 'any', 'all', 'many', 'few', 'little', 'big', 'small', 'new', 'old'
+        }
         
         for text in texts:
             if isinstance(text, str):
@@ -286,8 +349,8 @@ def main():
     st.title("🎓 College Event Feedback Analyzer")
     st.markdown("Analyze sentiment of feedback from college events like fests, hackathons, and workshops")
     
-    # Add note about simple analyzer
-    st.info("📌 This is a simplified version using rule-based sentiment analysis. For more accurate results, the full ML model version is recommended.")
+    # Add note about analyzer capabilities
+    st.info("📌 This analyzer supports both English and Hinglish feedback using rule-based sentiment analysis. Try words like 'zabardast', 'kamaal', 'badhiya' for positive or 'bekar', 'bakwas', 'faltu' for negative sentiments!")
     
     # Sidebar
     st.sidebar.title("Navigation")
