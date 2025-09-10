@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>College Event Feedback Sentiment Analysis</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js removed - using backend-generated charts -->
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-graduation-cap"></i> College Event Feedback Analyzer</h1>
+                <p>Analyze sentiment of feedback from college events like fests, hackathons, and workshops</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab('single')">
+                        <i class="fas fa-keyboard"></i> Single Feedback
+                    </button>
+                    <button class="tab-button" onclick="switchTab('batch')">
+                        <i class="fas fa-list"></i> Batch Analysis
+                    </button>
+                    <button class="tab-button" onclick="switchTab('csv')">
+                        <i class="fas fa-file-csv"></i> CSV Upload
+                    </button>
+                </div>
+
+                <!-- Single Feedback Tab -->
+                <div id="single-tab" class="tab-content active">
+                    <div class="input-card">
+                        <h3><i class="fas fa-comment"></i> Analyze Single Feedback</h3>
+                        <form id="single-form">
+                            <div class="form-group">
+                                <label for="feedback-text">Enter your feedback:</label>
+                                <textarea 
+                                    id="feedback-text" 
+                                    placeholder="Enter feedback about the college event (e.g., 'The hackathon was amazing! Great organization and helpful mentors.')"
+                                    rows="4"
+                                    required
+                                ></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Analyze Sentiment
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Batch Analysis Tab -->
+                <div id="batch-tab" class="tab-content">
+                    <div class="input-card">
+                        <h3><i class="fas fa-list"></i> Batch Analysis</h3>
+                        <form id="batch-form">
+                            <div class="form-group">
+                                <label for="batch-text">Enter multiple feedback texts (one per line):</label>
+                                <textarea 
+                                    id="batch-text" 
+                                    placeholder="Enter multiple feedback texts, one per line:&#10;The fest was amazing!&#10;Could be better organized.&#10;Great workshops and speakers."
+                                    rows="8"
+                                    required
+                                ></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-chart-bar"></i> Analyze All
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- CSV Upload Tab -->
+                <div id="csv-tab" class="tab-content">
+                    <div class="input-card">
+                        <h3><i class="fas fa-file-csv"></i> CSV Upload</h3>
+                        <form id="csv-form">
+                            <div class="form-group">
+                                <label for="csv-file">Upload CSV file with feedback data:</label>
+                                <div class="file-upload">
+                                    <input type="file" id="csv-file" accept=".csv" required>
+                                    <label for="csv-file" class="file-upload-label">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        Choose CSV File
+                                    </label>
+                                </div>
+                                <small class="help-text">
+                                    CSV should contain a 'Feedback' column with the feedback text.
+                                </small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Upload & Analyze
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2><i class="fas fa-chart-pie"></i> Analysis Results</h2>
+                    <button class="btn btn-secondary" onclick="clearResults()">
+                        <i class="fas fa-trash"></i> Clear Results
+                    </button>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing feedback...</p>
+                </div>
+
+                <!-- Sentiment Distribution Chart -->
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-pie"></i> Sentiment Distribution</h3>
+                    <!-- Backend-generated pie chart will be displayed here -->
+                </div>
+
+                <!-- Word Analysis -->
+                <div class="word-analysis">
+                    <div class="word-section">
+                        <h3><i class="fas fa-thumbs-up"></i> Most Common Positive Words</h3>
+                        <div id="positive-words" class="word-cloud"></div>
+                    </div>
+                    <div class="word-section">
+                        <h3><i class="fas fa-thumbs-down"></i> Most Common Negative Words</h3>
+                        <div id="negative-words" class="word-cloud"></div>
+                    </div>
+                </div>
+
+                <!-- Individual Results -->
+                <div class="individual-results">
+                    <h3><i class="fas fa-list-alt"></i> Individual Analysis Results</h3>
+                    <div id="results-list" class="results-list"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 College Event Feedback Analyzer. Built with FastAPI, scikit-learn, and modern web technologies.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="static/api.js?v=18"></script>
+    <script src="static/script.js?v=18"></script>
+</body>
+</html>
