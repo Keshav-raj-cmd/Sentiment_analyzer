@@ -389,16 +389,20 @@ def create_sentiment_chart(results: List[Dict]):
         st.info("No sentiment data available")
         return
     
+    import matplotlib.pyplot as plt
     col1, col2 = st.columns(2)
     
     with col1:
-        # Create simple bar chart using Streamlit
         st.subheader("Sentiment Distribution")
         chart_data = pd.DataFrame(
             list(sentiment_counts.items()),
             columns=['Sentiment', 'Count']
         )
-        st.bar_chart(chart_data.set_index('Sentiment'))
+        # Pie chart for sentiment
+        fig, ax = plt.subplots()
+        ax.pie(chart_data['Count'], labels=chart_data['Sentiment'], autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
+        ax.axis('equal')
+        st.pyplot(fig)
     
     with col2:
         st.subheader("Analysis Method Used")
@@ -407,7 +411,11 @@ def create_sentiment_chart(results: List[Dict]):
                 list(method_counts.items()),
                 columns=['Method', 'Count']
             )
-            st.bar_chart(method_data.set_index('Method'))
+            # Pie chart for method
+            fig2, ax2 = plt.subplots()
+            ax2.pie(method_data['Count'], labels=method_data['Method'], autopct='%1.1f%%', startangle=90, colors=plt.cm.Pastel1.colors)
+            ax2.axis('equal')
+            st.pyplot(fig2)
     
     # Display statistics
     total = sum(sentiment_counts.values())
@@ -451,7 +459,12 @@ def display_word_analysis(results: List[Dict], analyzer: AdvancedHinglishSentime
             st.subheader("🟢 Most Common Positive Words")
             if positive_words:
                 pos_df = pd.DataFrame(positive_words, columns=['Word', 'Count'])
-                st.bar_chart(pos_df.set_index('Word')['Count'])
+                # Pie chart for positive words
+                import matplotlib.pyplot as plt
+                fig, ax = plt.subplots()
+                ax.pie(pos_df['Count'], labels=pos_df['Word'], autopct='%1.1f%%', startangle=90, colors=plt.cm.Greens(np.linspace(0.5, 1, len(pos_df))))
+                ax.axis('equal')
+                st.pyplot(fig)
                 st.write("Top words:", ", ".join([word for word, count in positive_words[:5]]))
             else:
                 st.info("No positive words found")
@@ -460,7 +473,11 @@ def display_word_analysis(results: List[Dict], analyzer: AdvancedHinglishSentime
             st.subheader("🔴 Most Common Negative Words")
             if negative_words:
                 neg_df = pd.DataFrame(negative_words, columns=['Word', 'Count'])
-                st.bar_chart(neg_df.set_index('Word')['Count'])
+                # Pie chart for negative words
+                fig2, ax2 = plt.subplots()
+                ax2.pie(neg_df['Count'], labels=neg_df['Word'], autopct='%1.1f%%', startangle=90, colors=plt.cm.Reds(np.linspace(0.5, 1, len(neg_df))))
+                ax2.axis('equal')
+                st.pyplot(fig2)
                 st.write("Top words:", ", ".join([word for word, count in negative_words[:5]]))
             else:
                 st.info("No negative words found")
@@ -533,27 +550,13 @@ def main():
     
     # Header
     st.title("🎓 Advanced Hinglish Feedback Analyzer")
-    st.markdown("**Powered by AI**: Analyze sentiment of feedback from college events in English, Hindi, and Hinglish")
+    #st.markdown("**Powered by AI**: Analyze sentiment of feedback from college events in English, Hindi, and Hinglish")
     
     # Add note about analyzer capabilities
     if ML_AVAILABLE:
-        st.success("🤖 **Advanced AI Mode**: Using state-of-the-art machine learning models for superior accuracy in Hinglish sentiment analysis!")
+        st.success("🤖 Using state-of-the-art machine learning models for superior accuracy in Hinglish sentiment analysis!")
     else:
         st.info("📚 **Enhanced Rule-based Mode**: Sophisticated analysis with extensive Hinglish vocabulary. Try 'Event zabardast tha!' or 'Bilkul faltu organization!'")
-    
-    # Example phrases
-    with st.expander("💡 Try these Hinglish examples"):
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("**Positive Examples:**")
-            st.code("Event bahut zabardast tha!")
-            st.code("Kamaal ka fest tha yaar")
-            st.code("Bilkul shandaar organization")
-        with col2:
-            st.markdown("**Negative Examples:**")
-            st.code("Bekar organization tha")
-            st.code("Bilkul faltu event hai")
-            st.code("Kuch bhi bakwas program")
     
     # Sidebar
     st.sidebar.title("Navigation")
@@ -626,7 +629,11 @@ def main():
                         # Detailed scores
                         st.subheader("Detailed Scores")
                         scores_df = pd.DataFrame([result['scores']])
-                        st.bar_chart(scores_df.T)
+                        import matplotlib.pyplot as plt
+                        fig, ax = plt.subplots()
+                        ax.pie(scores_df.iloc[0], labels=scores_df.columns, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
+                        ax.axis('equal')
+                        st.pyplot(fig)
                         
                         st.success("Analysis complete! Check the results section below.")
             else:
